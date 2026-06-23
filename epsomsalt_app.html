@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌿 epsomsalt 業務管理システム</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+<style>
+:root {
+  --sidebar-w: 220px;
+  --brand: #1B4332;
+  --brand-mid: #2D6A4F;
+  --brand-light: #40916C;
+  --brand-pale: #D8F3DC;
+  --accent: #e8826a;
+  --accent-light: #fff0ec;
+  --bg: #F4F1EC;
+  --card: #FFFFFF;
+  --text: #1A1A1A;
+  --muted: #6B7280;
+  --border: #E5E0D8;
+  --shadow: 0 2px 14px rgba(0,0,0,0.07);
+  --r: 14px;
+  --amazon: #FF9900; --amazon-bg: #FFF8ED;
+  --rakuten: #BF0000; --rakuten-bg: #FFF0F0;
+  --yahoo: #6001D2; --yahoo-bg: #F5F0FF;
+  --epsom-green: #2E7D32; --epsom-green-bg: #F0F9F0;
+  --sns: #E91E8C; --sns-bg: #FFF0F7;
+  --blue: #1565C0; --blue-bg: #EEF4FF;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden;}
+
+/* ─── SIDEBAR ─── */
+.sidebar{
+  width:var(--sidebar-w);flex-shrink:0;
+  background:var(--brand);
+  display:flex;flex-direction:column;
+  height:100vh;overflow-y:auto;
+  position:relative;z-index:10;
+}
+.sidebar-logo{
+  padding:22px 18px 4px;
+  font-size:18px;font-weight:800;color:#fff;
+  letter-spacing:-0.3px;
+}
+.sidebar-sub{font-size:10px;color:rgba(255,255,255,0.5);padding:0 18px 16px;border-bottom:1px solid rgba(255,255,255,0.1);}
+.nav-group{padding:14px 12px 4px;font-size:9px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:1px;text-transform:uppercase;}
+.nav-item{
+  display:flex;align-items:center;gap:9px;
+  padding:10px 18px;font-size:13px;color:rgba(255,255,255,0.75);
+  cursor:pointer;border-radius:8px;margin:1px 8px;
+  transition:all 0.15s;text-decoration:none;
+}
+.nav-item:hover{background:rgba(255,255,255,0.08);color:#fff;}
+.nav-item.active{background:var(--brand-light);color:#fff;font-weight:700;}
+.nav-icon{font-size:15px;flex-shrink:0;}
+.sidebar-footer{margin-top:auto;padding:14px 16px;border-top:1px solid rgba(255,255,255,0.1);}
+.sf-label{font-size:10px;color:rgba(255,255,255,0.5);margin-bottom:6px;}
+.sf-bar{height:5px;background:rgba(255,255,255,0.15);border-radius:3px;overflow:hidden;margin-bottom:4px;}
+.sf-fill{height:100%;background:var(--brand-light);border-radius:3px;transition:width 0.5s;}
+.sf-num{font-size:11px;color:rgba(255,255,255,0.6);}
+
+/* ─── MAIN ─── */
+.main{flex:1;overflow-y:auto;height:100vh;}
+.section{display:none;padding:24px;}
+.section.active{display:block;}
+
+/* ─── PAGE HEADER ─── */
+.page-header{margin-bottom:20px;}
+.page-title{font-size:22px;font-weight:800;display:flex;align-items:center;gap:10px;}
+.page-desc{font-size:12px;color:var(--muted);margin-top:4px;}
+
+/* ─── STAT CARDS ─── */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:20px;}
+.stat-card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;border:1px solid var(--border);}
+.stat-num{font-size:28px;font-weight:800;line-height:1;}
+.stat-label{font-size:11px;color:var(--muted);margin-top:4px;}
+.stat-sub{font-size:10px;margin-top:8px;font-weight:600;}
+
+/* ─── CARDS ─── */
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;margin-bottom:12px;}
+.card-head{padding:14px 16px 10px;display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid var(--border);}
+.card-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+.card-title{font-size:14px;font-weight:700;}
+.card-policy{font-size:10px;font-weight:600;margin-top:3px;display:inline-block;padding:2px 8px;border-radius:8px;}
+.card-body{padding:12px 16px 14px;}
+
+/* ─── GRID ─── */
+.grid-2{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
+
+/* ─── PHASE SECTION ─── */
+.phase-block{margin-bottom:24px;}
+.phase-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.phase-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;}
+.phase-name{font-size:14px;font-weight:700;}
+.phase-note{font-size:11px;color:var(--muted);}
+.phase-progress{flex:1;max-width:120px;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.phase-fill{height:100%;border-radius:3px;transition:width 0.4s;}
+
+/* ─── CHECKLIST ─── */
+.checklist{display:flex;flex-direction:column;gap:3px;margin:8px 0;}
+.ci{display:flex;align-items:flex-start;gap:8px;padding:5px 0;cursor:pointer;user-select:none;}
+.ci input{display:none;}
+.cb{width:17px;height:17px;border:2px solid var(--border);border-radius:5px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;background:#fff;transition:all 0.2s;}
+.ci.done .cb{background:var(--brand-light);border-color:var(--brand-light);}
+.ci.done .cb::after{content:'✓';color:white;font-size:10px;font-weight:700;}
+.ci.done .ct{text-decoration:line-through;color:var(--muted);}
+.ct{font-size:11px;line-height:1.5;}
+
+/* ─── RESULT / KPI FIELDS ─── */
+.field-label{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin:8px 0 3px;}
+.result-ta{width:100%;font-size:11px;border:1px solid var(--border);border-radius:8px;padding:6px 9px;resize:none;font-family:inherit;background:#fafaf8;color:var(--text);transition:border-color 0.2s;}
+.result-ta:focus{outline:none;border-color:var(--brand-light);}
+.kpi-row{display:flex;gap:6px;align-items:center;margin-top:4px;}
+.kpi-in{flex:1;font-size:14px;font-weight:700;border:1px solid var(--border);border-radius:8px;padding:5px 9px;text-align:right;font-family:inherit;color:var(--brand-light);background:var(--brand-pale);}
+.kpi-in:focus{outline:none;border-color:var(--brand-light);}
+.kpi-unit{font-size:11px;color:var(--muted);}
+
+/* ─── CHIPS ─── */
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;}
+.chip{font-size:10px;padding:2px 9px;border-radius:8px;font-weight:500;}
+.chip-item{background:#f0f0f0;color:#555;}
+.chip-hot{background:#fff0e0;color:#c05000;}
+.chip-brand{background:var(--brand-pale);color:var(--brand-mid);}
+.chip-info{background:var(--blue-bg);color:var(--blue);}
+
+/* ─── AD PLATFORM TABS ─── */
+.platform-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.ptab{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:none;opacity:0.55;transition:all 0.2s;}
+.ptab.active{opacity:1;transform:scale(1.04);}
+.platform-section{display:none;}
+.platform-section.active{display:block;}
+
+/* ─── AUTO FLOW ─── */
+.flow-card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;margin-bottom:12px;}
+.flow-title{font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.flow-step{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f0ede8;align-items:flex-start;}
+.flow-step:last-child{border-bottom:none;}
+.step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;color:white;}
+.step-title{font-size:12px;font-weight:700;margin-bottom:2px;}
+.step-desc{font-size:11px;color:var(--muted);line-height:1.5;}
+.step-tool{display:inline-block;font-size:10px;font-weight:700;background:var(--blue-bg);color:var(--blue);border-radius:6px;padding:2px 8px;margin-top:4px;}
+
+/* ─── TOOL GRID ─── */
+.tool-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px 15px;box-shadow:var(--shadow);}
+.tool-name{font-size:13px;font-weight:700;margin-bottom:3px;}
+.tool-desc{font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:6px;}
+.tool-price{font-size:10px;font-weight:700;color:var(--brand-mid);background:var(--brand-pale);padding:2px 8px;border-radius:6px;display:inline-block;}
+
+/* ─── INFO BOX ─── */
+.tip{background:#fffbec;border:1px solid #f0d898;border-radius:10px;padding:11px 14px;margin-top:12px;font-size:11px;line-height:1.7;}
+.tip strong{color:#8a6000;}
+
+/* ─── BADGE ─── */
+.auto-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;background:var(--blue-bg);color:var(--blue);border:1px solid #b3cff5;border-radius:8px;padding:3px 8px;margin-top:8px;}
+
+/* ─── HOME CHART ─── */
+.chart-wrap{position:relative;height:180px;}
+
+/* ─── KPI TABLE ─── */
+.kpi-table{width:100%;border-collapse:collapse;font-size:12px;}
+.kpi-table th{background:#f5f2ed;padding:8px 12px;text-align:left;font-weight:700;font-size:10px;text-transform:uppercase;color:var(--muted);}
+.kpi-table td{padding:8px 12px;border-bottom:1px solid #f0ede8;}
+.kpi-table tr:last-child td{border-bottom:none;}
+
+/* ─── QUICK ACCESS ─── */
+.quick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:20px;}
+.quick-card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border);padding:16px;cursor:pointer;transition:all 0.15s;text-align:center;}
+.quick-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.10);}
+.quick-icon{font-size:26px;margin-bottom:6px;}
+.quick-title{font-size:12px;font-weight:700;}
+.quick-stat{font-size:10px;color:var(--muted);margin-top:3px;}
+
+/* ─── DIVIDER ─── */
+.divider{height:1px;background:var(--border);margin:18px 0;}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px;}
+
+/* ─── ANIMATION ─── */
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.25)}100%{transform:scale(1)}}
+.ci.just-done .cb{animation:pop 0.25s ease;}
+
+/* ─── MOBILE ─── */
+@media(max-width:680px){
+  body{flex-direction:column;}
+  .sidebar{width:100%;height:auto;flex-direction:row;flex-wrap:wrap;overflow-x:auto;}
+  .sidebar-logo,.sidebar-sub,.nav-group,.sidebar-footer{display:none;}
+  .sidebar nav{display:flex;flex-direction:row;padding:6px;}
+  .nav-item{margin:2px;padding:7px 12px;font-size:11px;}
+  .main{height:auto;}
+  .section{padding:14px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">🌿 epsomsalt</div>
+  <div class="sidebar-sub">スキンケア業務管理システム</div>
+  <nav>
+    <div class="nav-group">概要</div>
+    <div class="nav-item active" onclick="show('home',this)"><span class="nav-icon">🏠</span>ダッシュボード</div>
+    <div class="nav-group">業務フロー</div>
+    <div class="nav-item" onclick="show('marketing',this)"><span class="nav-icon">📊</span>マーケティング</div>
+    <div class="nav-item" onclick="show('production',this)"><span class="nav-icon">🏭</span>生産</div>
+    <div class="nav-group">広告・集客</div>
+    <div class="nav-item" onclick="show('ads',this)"><span class="nav-icon">📣</span>広告戦略</div>
+    <div class="nav-item" onclick="show('automation',this)"><span class="nav-icon">⚙️</span>自動化プラン</div>
+    <div class="nav-group">数字管理</div>
+    <div class="nav-item" onclick="show('kpi',this)"><span class="nav-icon">📈</span>KPIボード</div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sf-label">全体進捗</div>
+    <div class="sf-bar"><div class="sf-fill" id="sf-fill" style="width:0%"></div></div>
+    <div class="sf-num" id="sf-num">0 / 0 タスク完了</div>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<main class="main">
+
+<!-- ─── HOME ─── -->
+<div class="section active" id="sec-home">
+  <div class="page-header">
+    <div class="page-title">🏠 ダッシュボード</div>
+    <div class="page-desc" id="home-date"></div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card" style="border-top:3px solid var(--brand-light)">
+      <div class="stat-num" id="h-mkt-done" style="color:var(--brand-light)">0</div>
+      <div class="stat-label">マーケティング完了タスク</div>
+      <div class="stat-sub" style="color:var(--brand-light)" id="h-mkt-pct">0%</div>
+    </div>
+    <div class="stat-card" style="border-top:3px solid var(--accent)">
+      <div class="stat-num" id="h-prd-done" style="color:var(--accent)">0</div>
+      <div class="stat-label">生産完了タスク</div>
+      <div class="stat-sub" style="color:var(--accent)" id="h-prd-pct">0%</div>
+    </div>
+    <div class="stat-card" style="border-top:3px solid var(--blue)">
+      <div class="stat-num" style="color:var(--blue)">5</div>
+      <div class="stat-label">広告プラットフォーム</div>
+      <div class="stat-sub" style="color:var(--blue)">Amazon・楽天・Yahoo・自社・SNS</div>
+    </div>
+    <div class="stat-card" style="border-top:3px solid var(--sns)">
+      <div class="stat-num" style="color:var(--sns)" id="h-kpi-count">0</div>
+      <div class="stat-label">入力済みKPI</div>
+      <div class="stat-sub" style="color:var(--sns)">数字が埋まっています</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
+    <div class="card" style="border:none;">
+      <div class="card-head"><span style="font-size:14px;font-weight:700;">📊 進捗チャート</span></div>
+      <div class="card-body"><div class="chart-wrap"><canvas id="homeChart"></canvas></div></div>
+    </div>
+    <div class="card" style="border:none;">
+      <div class="card-head"><span style="font-size:14px;font-weight:700;">⚡ 今日のフォーカス</span></div>
+      <div class="card-body">
+        <div class="field-label">今日取り組むこと</div>
+        <textarea class="result-ta" rows="4" id="today-focus" data-id="today-focus" placeholder="今日やることを書き込む..."></textarea>
+        <div class="field-label" style="margin-top:10px;">主体性ポリシー</div>
+        <div class="tip" style="margin-top:0;">
+          <strong>困っている人の肌を本当に救う製品をつくる。</strong><br>
+          真実の成分・肌に優しい処方・感謝が伝わる届け方。すべては使う人のために。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="font-size:13px;font-weight:700;margin-bottom:10px;">🚀 クイックアクセス</div>
+  <div class="quick-grid">
+    <div class="quick-card" onclick="show('marketing',document.querySelector('[onclick*=marketing]'))">
+      <div class="quick-icon">📊</div>
+      <div class="quick-title">マーケティング</div>
+      <div class="quick-stat" id="qa-mkt">0/0 完了</div>
+    </div>
+    <div class="quick-card" onclick="show('production',document.querySelector('[onclick*=production]'))">
+      <div class="quick-icon">🏭</div>
+      <div class="quick-title">生産フロー</div>
+      <div class="quick-stat" id="qa-prd">0/0 完了</div>
+    </div>
+    <div class="quick-card" onclick="show('ads',document.querySelector('[onclick*=ads]'))">
+      <div class="quick-icon">📣</div>
+      <div class="quick-title">広告戦略</div>
+      <div class="quick-stat">5プラットフォーム</div>
+    </div>
+    <div class="quick-card" onclick="show('automation',document.querySelector('[onclick*=automation]'))">
+      <div class="quick-icon">⚙️</div>
+      <div class="quick-title">自動化プラン</div>
+      <div class="quick-stat">ツール6種</div>
+    </div>
+    <div class="quick-card" onclick="show('kpi',document.querySelector('[onclick*=kpi]'))">
+      <div class="quick-icon">📈</div>
+      <div class="quick-title">KPIボード</div>
+      <div class="quick-stat" id="qa-kpi">数字を入力</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── MARKETING ─── -->
+<div class="section" id="sec-marketing">
+  <div class="page-header">
+    <div class="page-title">📊 マーケティング開発フロー</div>
+    <div class="page-desc">リサーチ → 開発 → LP → フォロー → 広告発信</div>
+  </div>
+
+  <!-- Phase 1 -->
+  <div class="phase-block">
+    <div class="phase-head">
+      <div class="phase-dot" style="background:#e8826a"></div>
+      <div><div class="phase-name">Phase 1：リサーチ</div><div class="phase-note">困っている人を深く知る</div></div>
+      <div class="phase-progress"><div class="phase-fill" style="background:#e8826a" id="pf-mkt1"></div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><span class="card-icon">🔬</span><div><div class="card-title">肌の問題点リサーチ</div><span class="card-policy" style="background:var(--accent-light);color:var(--accent)">困っている人を知る</span></div></div>
+        <div class="card-body">
+          <div class="field-label">必要なもの</div>
+          <div class="chips"><span class="chip chip-item">医師・肌サンプル</span><span class="chip chip-info">データ</span><span class="chip chip-info">モニター募集</span></div>
+          <div class="field-label">行動</div>
+          <div class="checklist">
+            <label class="ci" data-id="m-r1a"><div class="cb"></div><span class="ct">肌の問題調査（データ分析）</span></label>
+            <label class="ci" data-id="m-r1b"><div class="cb"></div><span class="ct">優先順位の選択</span></label>
+            <label class="ci" data-id="m-r1c"><div class="cb"></div><span class="ct">人口数・市場規模の確認</span></label>
+            <label class="ci" data-id="m-r1d"><div class="cb"></div><span class="ct">医師の評価取得</span></label>
+          </div>
+          <div class="field-label">結果報告</div>
+          <textarea class="result-ta" rows="2" data-id="m-r1-note" placeholder="調査結果・気づき..."></textarea>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">🧪</span><div><div class="card-title">原因の調査</div><span class="card-policy" style="background:var(--accent-light);color:var(--accent)">本質的な原因を追う</span></div></div>
+        <div class="card-body">
+          <div class="checklist">
+            <label class="ci" data-id="m-r2a"><div class="cb"></div><span class="ct">肌サンプルの分析</span></label>
+            <label class="ci" data-id="m-r2b"><div class="cb"></div><span class="ct">本原因の特定</span></label>
+            <label class="ci" data-id="m-r2c"><div class="cb"></div><span class="ct">対処方法の調査</span></label>
+          </div>
+          <div class="field-label">結果報告</div>
+          <textarea class="result-ta" rows="2" data-id="m-r2-note" placeholder="原因・対処方法..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 2 -->
+  <div class="phase-block">
+    <div class="phase-head">
+      <div class="phase-dot" style="background:#6a9fe8"></div>
+      <div><div class="phase-name">Phase 2：製品開発</div><div class="phase-note">最善の処方・容器・ラベルを決める</div></div>
+      <div class="phase-progress"><div class="phase-fill" style="background:#6a9fe8" id="pf-mkt2"></div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><span class="card-icon">🌿</span><div><div class="card-title">原材料調達</div><span class="card-policy" style="background:var(--brand-pale);color:var(--brand-mid)">肌に優しい原料を選ぶ</span></div></div>
+        <div class="card-body">
+          <div class="chips"><span class="chip chip-item">原料</span><span class="chip chip-info">モニター募集</span><span class="chip chip-item">原料資材価格</span></div>
+          <div class="checklist">
+            <label class="ci" data-id="m-d1a"><div class="cb"></div><span class="ct">原料の選択（成分分析）</span></label>
+            <label class="ci" data-id="m-d1b"><div class="cb"></div><span class="ct">必要量の算出</span></label>
+            <label class="ci" data-id="m-d1c"><div class="cb"></div><span class="ct">仕入れ先確認</span></label>
+          </div>
+          <div class="kpi-row"><input class="kpi-in" type="number" data-id="m-d1-kpi" placeholder="0"><span class="kpi-unit">円/kg</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">⚗️</span><div><div class="card-title">調理・実験</div><span class="card-policy" style="background:var(--brand-pale);color:var(--brand-mid)">ベスト処方を追求</span></div></div>
+        <div class="card-body">
+          <div class="checklist">
+            <label class="ci" data-id="m-d2a"><div class="cb"></div><span class="ct">用途の選択</span></label>
+            <label class="ci" data-id="m-d2b"><div class="cb"></div><span class="ct">調理（試作）</span></label>
+            <label class="ci" data-id="m-d2c"><div class="cb"></div><span class="ct">自分使用・感触確認</span></label>
+            <label class="ci" data-id="m-d2d"><div class="cb"></div><span class="ct">モニター使用</span></label>
+            <label class="ci" data-id="m-d2e"><div class="cb"></div><span class="ct">繰り返し改善</span></label>
+          </div>
+          <div class="field-label">試作結果</div>
+          <textarea class="result-ta" rows="2" data-id="m-d2-note" placeholder="試作結果・改善点..."></textarea>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">🏷️</span><div><div class="card-title">ラベル・容器</div><span class="card-policy" style="background:var(--brand-pale);color:var(--brand-mid)">当社基本パターン</span></div></div>
+        <div class="card-body">
+          <div class="checklist">
+            <label class="ci" data-id="m-d3a"><div class="cb"></div><span class="ct">デザイン作成</span></label>
+            <label class="ci" data-id="m-d3b"><div class="cb"></div><span class="ct">容器選択・実験</span></label>
+            <label class="ci" data-id="m-d3c"><div class="cb"></div><span class="ct">サンプル印刷（1000枚）</span></label>
+            <label class="ci" data-id="m-d3d"><div class="cb"></div><span class="ct">精品マスター作成</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">💰</span><div><div class="card-title">原価・設備</div><span class="card-policy" style="background:var(--brand-pale);color:var(--brand-mid)">数字で見える化</span></div></div>
+        <div class="card-body">
+          <div class="checklist">
+            <label class="ci" data-id="m-d4a"><div class="cb"></div><span class="ct">原価計算</span></label>
+            <label class="ci" data-id="m-d4b"><div class="cb"></div><span class="ct">製品マスター作成</span></label>
+            <label class="ci" data-id="m-d4c"><div class="cb"></div><span class="ct">本生産用機械の確認</span></label>
+          </div>
+          <div class="kpi-row"><input class="kpi-in" type="number" data-id="m-d4-kpi" placeholder="0"><span class="kpi-unit">円/個（原価）</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 3 -->
+  <div class="phase-block">
+    <div class="phase-head">
+      <div class="phase-dot" style="background:#4caf82"></div>
+      <div><div class="phase-name">Phase 3：LP・商品ページ</div><div class="phase-note">真実の情報で伝える</div></div>
+      <div class="phase-progress"><div class="phase-fill" style="background:#4caf82" id="pf-mkt3"></div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><span class="card-icon">📸</span><div><div class="card-title">製品写真・動画</div></div></div>
+        <div class="card-body">
+          <div class="checklist">
+            <label class="ci" data-id="m-lp1a"><div class="cb"></div><span class="ct">製品写真撮影</span></label>
+            <label class="ci" data-id="m-lp1b"><div class="cb"></div><span class="ct">動画撮影</span></label>
+            <label class="ci" data-id="m-lp1c"><div class="cb"></div><span class="ct">イラスト制作</span></label>
+            <label class="ci" data-id="m-lp1d"><div class="cb"></div><span class="ct">各ECページへ掲載</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">📋</span><div><div class="card-title">成分表・分析表</div></div></div>
+        <div class="card-body">
+          <div class="checklist">
+            <label class="ci" data-id="m-lp2a"><div class="cb"></div><span class="ct">成分表の作成</span></label>
+            <label class="ci" data-id="m-lp2b"><div class="cb"></div><span class="ct">レシピ作成</span></label>
+            <label class="ci" data-id="m-lp2c"><div class="cb"></div><span class="ct">分析確認（MSDS）</span></label>
+            <label class="ci" data-id="m-lp2d"><div class="cb"></div><span class="ct">製品マスターへ反映</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 4 -->
+  <div class="phase-block">
+    <div class="phase-head">
+      <div class="phase-dot" style="background:#e8b86a"></div>
+      <div><div class="phase-name">Phase 4：発送・顧客フォロー</div><div class="phase-note">感謝を届ける</div></div>
+      <div class="phase-progress"><div class="phase-fill" style="background:#e8b86a" id="pf-mkt4"></div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><span class="card-icon">💌</span><div><div class="card-title">お礼状・リーフレット</div></div></div>
+        <div class="card-body">
+          <div class="checklist">
+            <label class="ci" data-id="m-f1a"><div class="cb"></div><span class="ct">お礼状の文章作成</span></label>
+            <label class="ci" data-id="m-f1b"><div class="cb"></div><span class="ct">リーフレットレイアウト</span></label>
+            <label class="ci" data-id="m-f1c"><div class="cb"></div><span class="ct">印刷発注</span></label>
+            <label class="ci" data-id="m-f1d"><div class="cb"></div><span class="ct">パッケージシール確認</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">📊</span><div><div class="card-title">モニター・アンケート</div></div></div>
+        <div class="card-body">
+          <div class="checklist">
+            <label class="ci" data-id="m-f2a"><div class="cb"></div><span class="ct">アンケート設計</span></label>
+            <label class="ci" data-id="m-f2b"><div class="cb"></div><span class="ct">モニター募集</span></label>
+            <label class="ci" data-id="m-f2c"><div class="cb"></div><span class="ct">効果測定</span></label>
+            <label class="ci" data-id="m-f2d"><div class="cb"></div><span class="ct">お礼の送付</span></label>
+          </div>
+          <div class="kpi-row"><input class="kpi-in" type="number" data-id="m-f2-kpi" placeholder="0"><span class="kpi-unit">人（モニター数）</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 5 -->
+  <div class="phase-block">
+    <div class="phase-head">
+      <div class="phase-dot" style="background:#9c6ae8"></div>
+      <div><div class="phase-name">Phase 5：製品マスター・広告</div><div class="phase-note">データ整理と発信</div></div>
+      <div class="phase-progress"><div class="phase-fill" style="background:#9c6ae8" id="pf-mkt5"></div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><span class="card-icon">🗄️</span><div><div class="card-title">製品マスター整理</div></div></div>
+        <div class="card-body">
+          <div class="checklist">
+            <label class="ci" data-id="m-m1a"><div class="cb"></div><span class="ct">製品マスター作成・更新</span></label>
+            <label class="ci" data-id="m-m1b"><div class="cb"></div><span class="ct">原価表作成</span></label>
+            <label class="ci" data-id="m-m1c"><div class="cb"></div><span class="ct">データベース整理</span></label>
+          </div>
+          <div class="kpi-row"><input class="kpi-in" type="number" data-id="m-m1-kpi" placeholder="0"><span class="kpi-unit">円（売価）</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">📣</span><div><div class="card-title">SNS・広告発信</div></div></div>
+        <div class="card-body">
+          <div class="checklist">
+            <label class="ci" data-id="m-m2a"><div class="cb"></div><span class="ct">市場調査</span></label>
+            <label class="ci" data-id="m-m2b"><div class="cb"></div><span class="ct">動画・写真コンテンツ制作</span></label>
+            <label class="ci" data-id="m-m2c"><div class="cb"></div><span class="ct">SNS発信開始</span></label>
+            <label class="ci" data-id="m-m2d"><div class="cb"></div><span class="ct">売れ数分析・改善</span></label>
+          </div>
+          <div class="kpi-row"><input class="kpi-in" type="number" data-id="m-m2-kpi" placeholder="0"><span class="kpi-unit">個/月（売上数）</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PRODUCTION ─── -->
+<div class="section" id="sec-production">
+  <div class="page-header">
+    <div class="page-title">🏭 生産フロー</div>
+    <div class="page-desc">受注 → 本生産 → 出荷 → 在庫管理</div>
+  </div>
+
+  <div class="phase-block">
+    <div class="phase-head">
+      <div class="phase-dot" style="background:#6a9fe8"></div>
+      <div><div class="phase-name">Phase A：受注</div><div class="phase-note">工場に見やすく・段取りよく</div></div>
+      <div class="phase-progress"><div class="phase-fill" style="background:#6a9fe8" id="pf-prdA"></div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><span class="card-icon">📥</span><div><div class="card-title">受注データ集計</div><span class="card-policy" style="background:var(--blue-bg);color:var(--blue)">工場に見やすく</span></div></div>
+        <div class="card-body">
+          <div class="chips"><span class="chip chip-item">スケネコ</span></div>
+          <div class="checklist">
+            <label class="ci" data-id="p-A1a"><div class="cb"></div><span class="ct">受注データ集計</span></label>
+            <label class="ci" data-id="p-A1b"><div class="cb"></div><span class="ct">伝票印刷</span></label>
+            <label class="ci" data-id="p-A1c"><div class="cb"></div><span class="ct">発送データを送信</span></label>
+          </div>
+          <div class="kpi-row"><input class="kpi-in" type="number" data-id="p-A1-kpi" placeholder="0"><span class="kpi-unit">件（受注数）</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">📅</span><div><div class="card-title">生産予定</div><span class="card-policy" style="background:var(--blue-bg);color:var(--blue)">段取りが命</span></div></div>
+        <div class="card-body">
+          <div class="checklist">
+            <label class="ci" data-id="p-A2a"><div class="cb"></div><span class="ct">生産予定の作成</span></label>
+            <label class="ci" data-id="p-A2b"><div class="cb"></div><span class="ct">人員配置の決定</span></label>
+          </div>
+          <div class="field-label">生産予定メモ</div>
+          <textarea class="result-ta" rows="2" data-id="p-A2-note" placeholder="生産予定日・数量..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-block">
+    <div class="phase-head">
+      <div class="phase-dot" style="background:var(--accent)"></div>
+      <div><div class="phase-name">Phase B：生産</div><div class="phase-note">チェックで品質を守る</div></div>
+      <div class="phase-progress"><div class="phase-fill" style="background:var(--accent)" id="pf-prdB"></div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><span class="card-icon">🔧</span><div><div class="card-title">生産準備</div></div></div>
+        <div class="card-body">
+          <div class="chips"><span class="chip chip-item">ダンボール</span><span class="chip chip-item">リーフレット</span><span class="chip chip-item">手紙</span><span class="chip chip-item">原材料</span><span class="chip chip-item">パッケージ</span></div>
+          <div class="checklist">
+            <label class="ci" data-id="p-B1a"><div class="cb"></div><span class="ct">準備完了確認</span></label>
+            <label class="ci" data-id="p-B1b"><div class="cb"></div><span class="ct">見込み生産数の確認</span></label>
+            <label class="ci" data-id="p-B1c"><div class="cb"></div><span class="ct">材料配合・オペレーション確認</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">🏗️</span><div><div class="card-title">本生産</div></div></div>
+        <div class="card-body">
+          <div class="checklist">
+            <label class="ci" data-id="p-B2a"><div class="cb"></div><span class="ct">本生産開始</span></label>
+            <label class="ci" data-id="p-B2b"><div class="cb"></div><span class="ct">品質チェック</span></label>
+            <label class="ci" data-id="p-B2c"><div class="cb"></div><span class="ct">箱詰め</span></label>
+          </div>
+          <div class="kpi-row"><input class="kpi-in" type="number" data-id="p-B2-kpi" placeholder="0"><span class="kpi-unit">個（生産数）</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">📦</span><div><div class="card-title">発送・連絡</div></div></div>
+        <div class="card-body">
+          <div class="checklist">
+            <label class="ci" data-id="p-B3a"><div class="cb"></div><span class="ct">発送処理</span></label>
+            <label class="ci" data-id="p-B3b"><div class="cb"></div><span class="ct">発送連絡（追跡番号）</span></label>
+            <label class="ci" data-id="p-B3c"><div class="cb"></div><span class="ct">掃除・片付け</span></label>
+          </div>
+          <div class="kpi-row"><input class="kpi-in" type="number" data-id="p-B3-kpi" placeholder="0"><span class="kpi-unit">件（発送数）</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-block">
+    <div class="phase-head">
+      <div class="phase-dot" style="background:#4caf82"></div>
+      <div><div class="phase-name">Phase C：在庫管理</div><div class="phase-note">切らさない・余らせない</div></div>
+      <div class="phase-progress"><div class="phase-fill" style="background:#4caf82" id="pf-prdC"></div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><span class="card-icon">🧴</span><div><div class="card-title">原料在庫</div></div></div>
+        <div class="card-body">
+          <div class="checklist">
+            <label class="ci" data-id="p-C1a"><div class="cb"></div><span class="ct">原料在庫確認</span></label>
+            <label class="ci" data-id="p-C1b"><div class="cb"></div><span class="ct">発注点確認・発注</span></label>
+          </div>
+          <div class="kpi-row"><input class="kpi-in" type="number" data-id="p-C1-kpi" placeholder="0"><span class="kpi-unit">kg（在庫量）</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">📦</span><div><div class="card-title">資材・消耗品</div></div></div>
+        <div class="card-body">
+          <div class="checklist">
+            <label class="ci" data-id="p-C2a"><div class="cb"></div><span class="ct">資材在庫確認</span></label>
+            <label class="ci" data-id="p-C2b"><div class="cb"></div><span class="ct">消耗品確認</span></label>
+            <label class="ci" data-id="p-C2c"><div class="cb"></div><span class="ct">洗濯物・清潔管理</span></label>
+          </div>
+          <div class="field-label">在庫メモ</div>
+          <textarea class="result-ta" rows="2" data-id="p-C2-note" placeholder="在庫状況・発注予定..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── ADS ─── -->
+<div class="section" id="sec-ads">
+  <div class="page-header">
+    <div class="page-title">📣 広告戦略</div>
+    <div class="page-desc">各プラットフォームの最適広告手法</div>
+  </div>
+  <div class="platform-tabs">
+    <button class="ptab active" style="background:var(--amazon);color:white" onclick="showPlatform('amazon',this)">🛒 Amazon</button>
+    <button class="ptab" style="background:var(--rakuten);color:white" onclick="showPlatform('rakuten',this)">🔴 楽天</button>
+    <button class="ptab" style="background:var(--yahoo);color:white" onclick="showPlatform('yahoo',this)">💜 Yahoo!</button>
+    <button class="ptab" style="background:var(--epsom-green);color:white" onclick="showPlatform('epsom',this)">🌿 自社サイト</button>
+    <button class="ptab" style="background:var(--sns);color:white" onclick="showPlatform('sns',this)">📱 SNS動画</button>
+  </div>
+
+  <!-- Amazon -->
+  <div class="platform-section active" id="ps-amazon">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><span class="card-icon">🔍</span><div><div class="card-title">スポンサープロダクト（サーチ）</div></div></div>
+        <div class="card-body">
+          <div class="field-label">推奨キーワード</div>
+          <div class="chips"><span class="chip chip-hot">エプソムソルト</span><span class="chip chip-hot">入浴剤 肌荒れ</span><span class="chip chip-item">硫酸マグネシウム 入浴</span><span class="chip chip-item">スキンケア 敏感肌</span><span class="chip chip-brand">epsom salt</span><span class="chip chip-item">デトックス 入浴剤</span></div>
+          <div class="field-label" style="margin-top:10px">設定手順</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.7;">① オートキャンペーンで2週間データ収集<br>② 転換率の高いキーワードをマニュアルに移行<br>③ 競合ASINへのターゲティングも追加</div>
+          <div class="auto-badge">⚙️ スマート入札（動的な入札）ON</div>
+          <div class="field-label" style="margin-top:10px">目標ACoS</div>
+          <div class="kpi-row"><input class="kpi-in" type="number" data-id="ad-amz-acos" placeholder="25"><span class="kpi-unit">%</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">⭐</span><div><div class="card-title">スポンサーブランド（PR）</div></div></div>
+        <div class="card-body">
+          <div style="font-size:11px;color:var(--muted);line-height:1.7;">ブランドロゴ＋見出し＋製品3点をセットで表示。動画版が最も効果的。「エプソムソルト」一般キーワードに当てる。</div>
+          <div class="auto-badge">⚙️ 予算ルールで平日/週末を自動切替</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">🖼️</span><div><div class="card-title">スポンサーディスプレイ（バナー）</div></div></div>
+        <div class="card-body">
+          <div style="font-size:11px;color:var(--muted);line-height:1.7;">リターゲティング（詳細ページを見たユーザー）＋競合商品ページへのバナー表示。Amazonが自動でクリエイティブ生成。</div>
+          <div class="auto-badge">⚙️ Amazon AIが自動クリエイティブ生成</div>
+        </div>
+      </div>
+    </div>
+    <div class="tip">💡 ACoS &gt; 35%のキーワードは入札を10%下げる。転換率 &gt; 5%は入札を15%上げる。週次ルールで自動調整。</div>
+    <div class="field-label" style="margin-top:14px">メモ</div>
+    <textarea class="result-ta" rows="2" data-id="ad-amz-note" placeholder="Amazon広告のメモ・進捗..."></textarea>
+  </div>
+
+  <!-- 楽天 -->
+  <div class="platform-section" id="ps-rakuten">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><span class="card-icon">🔍</span><div><div class="card-title">RPP広告（サーチ）</div></div></div>
+        <div class="card-body">
+          <div style="font-size:11px;color:var(--muted);line-height:1.7;">楽天内検索結果の上位CPC広告。ROAS目標300〜500%（客単価が高い）。ポイント倍率との組み合わせでCTR大幅UP。</div>
+          <div class="auto-badge">⚙️ RMS広告で自動入札ON・週次レポートメール設定</div>
+          <div class="kpi-row" style="margin-top:8px"><input class="kpi-in" type="number" data-id="ad-rak-roas" placeholder="400"><span class="kpi-unit">%（目標ROAS）</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">⭐</span><div><div class="card-title">クーポンアドバンス（PR）</div></div></div>
+        <div class="card-body">
+          <div style="font-size:11px;color:var(--muted);line-height:1.7;">スーパーSALE前にクーポン10〜20%OFFでカートに残したユーザーを回収。ポイント5〜10倍でライバルに勝つ。</div>
+          <div class="auto-badge">⚙️ RMSでイベント連動クーポン自動ON/OFF</div>
+        </div>
+      </div>
+    </div>
+    <div class="tip">💡 楽天は「SEO（ページ評価）＋RPP広告＋クーポン」の三位一体が最強。商品ページにキーワードを自然に入れてSEOを高め、RPP広告でブースト。</div>
+    <div class="field-label" style="margin-top:14px">メモ</div>
+    <textarea class="result-ta" rows="2" data-id="ad-rak-note" placeholder="楽天広告のメモ・進捗..."></textarea>
+  </div>
+
+  <!-- Yahoo -->
+  <div class="platform-section" id="ps-yahoo">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><span class="card-icon">🔍</span><div><div class="card-title">アイテムマッチ（サーチ）</div></div></div>
+        <div class="card-body">
+          <div style="font-size:11px;color:var(--muted);line-height:1.7;">Yahoo!ショッピング検索結果のCPC広告。「おすすめ入札単価」より10〜20%高めると効果的。</div>
+          <div class="auto-badge">⚙️ ストアクリエイターの自動入札機能</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">⭐</span><div><div class="card-title">PRオプション（売上連動）</div></div></div>
+        <div class="card-body">
+          <div style="font-size:11px;color:var(--muted);line-height:1.7;">売れた時だけ課金（売上の1〜30%）。設定率が高いほど検索順位UP。3〜7%からスタート。アイテムマッチと合わせて上位を二重占拠。</div>
+          <div class="auto-badge">⚙️ 売上連動なので設定後は自動で動く</div>
+          <div class="kpi-row" style="margin-top:8px"><input class="kpi-in" type="number" data-id="ad-yhoo-pr" placeholder="5"><span class="kpi-unit">%（PRオプション率）</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="tip">💡 PRオプションは「広告費ゼロで売れたら払う」モデル。真っ先に設定すべき。アイテムマッチ＋PRオプション両方ONで「広告枠」と「通常枠」を同時に上位表示。</div>
+    <div class="field-label" style="margin-top:14px">メモ</div>
+    <textarea class="result-ta" rows="2" data-id="ad-yhoo-note" placeholder="Yahoo!広告のメモ..."></textarea>
+  </div>
+
+  <!-- 自社サイト -->
+  <div class="platform-section" id="ps-epsom">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><span class="card-icon">🔍</span><div><div class="card-title">Google検索広告</div></div></div>
+        <div class="card-body">
+          <div class="chips"><span class="chip chip-hot">エプソムソルト 購入</span><span class="chip chip-hot">エプソムソルト 効果</span><span class="chip chip-item">入浴剤 肌 おすすめ</span><span class="chip chip-brand">epsomsalt.jp</span></div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.7;margin-top:8px">レスポンシブ検索広告（RSA）でAIが最適組み合わせを自動選択。スマート入札「目標CPA」設定。</div>
+          <div class="auto-badge">⚙️ スマート入札ON → AI が入札を自動調整</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">🖼️</span><div><div class="card-title">Meta広告（Instagram/FB）</div></div></div>
+        <div class="card-body">
+          <div style="font-size:11px;color:var(--muted);line-height:1.7;">類似オーディエンス（既存購入者リストからLookalike作成）＋リターゲティング（サイト訪問者30日間追跡）。カルーセルで特長をストーリー展開。</div>
+          <div class="auto-badge">⚙️ Advantage+キャンペーンでAI全自動配信</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">🛍️</span><div><div class="card-title">Google P-MAX（ショッピング）</div></div></div>
+        <div class="card-body">
+          <div style="font-size:11px;color:var(--muted);line-height:1.7;">Google Merchant Centerに商品フィードを登録。P-MAXで検索・YouTube・Gmailに一括配信。商品情報は自動更新設定。</div>
+          <div class="auto-badge">⚙️ P-MAX は全チャンネルをAIが自動最適化</div>
+        </div>
+      </div>
+    </div>
+    <div class="tip">💡 自社サイトは「定期購入（サブスク）」への誘導が最重要。LTVが高まるので広告費をECより高くかけても割に合う。</div>
+    <div class="field-label" style="margin-top:14px">メモ</div>
+    <textarea class="result-ta" rows="2" data-id="ad-ep-note" placeholder="自社サイト広告のメモ..."></textarea>
+  </div>
+
+  <!-- SNS -->
+  <div class="platform-section" id="ps-sns">
+    <div class="grid-3">
+      <div class="tool-card">
+        <div class="tool-name" style="color:#E1306C">📸 Instagram</div>
+        <div style="font-size:10px;color:var(--muted);line-height:1.7;">Reels 9:16 / 最大90秒（最優先）<br>Feed 1:1 or 4:5 / 60秒<br>Stories 9:16 / 15秒<br>投稿頻度：Reels週3＋Feed週2</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-name" style="color:#000">🎵 TikTok</div>
+        <div style="font-size:10px;color:var(--muted);line-height:1.7;">動画 9:16 / 7〜15秒がバズりやすい<br>字幕は必須（音なし視聴者多い）<br>1080×1920px<br>投稿頻度：毎日〜週5</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-name" style="color:#FF0000">▶️ YouTube</div>
+        <div style="font-size:10px;color:var(--muted);line-height:1.7;">Shorts 9:16 / 60秒以内（優先）<br>通常動画 16:9 / 3〜10分<br>サムネイル 1280×720px<br>投稿頻度：Shorts週3＋動画週1</div>
+      </div>
+    </div>
+    <div class="tip" style="margin-top:12px">🎬 <strong>黄金テンプレート：</strong> ① 肌のBefore/After 15秒 → ② エプソムソルトを溶かすシーン（ASMR風）→ ③ 成分テキスト表示 → ④ 購入リンク。Canvaでテンプレート化して月1回まとめて量産。</div>
+    <div class="field-label" style="margin-top:14px">コンテンツメモ</div>
+    <textarea class="result-ta" rows="3" data-id="ad-sns-note" placeholder="今月のコンテンツ計画..."></textarea>
+  </div>
+</div>
+
+<!-- ─── AUTOMATION ─── -->
+<div class="section" id="sec-automation">
+  <div class="page-header">
+    <div class="page-title">⚙️ 自動化プラン</div>
+    <div class="page-desc">一度設定すれば「毎日・毎週・毎月」自動で動き続けるシステム</div>
+  </div>
+
+  <div class="flow-card">
+    <div class="flow-title">🔄 広告自動化の全体サイクル</div>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="step-num" style="background:#1565C0">毎日</div>
+        <div><div class="step-title">入札＆配信の自動最適化</div><div class="step-desc">Amazon スマート入札 / Google スマート入札 / Meta Advantage+ / Yahoo PRオプション — AI が24時間自動で動く。触らなくていい。</div></div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num" style="background:#1976D2">週1</div>
+        <div><div class="step-title">レポート確認＋微調整（30分）</div><div class="step-desc">各プラットフォームの週次レポートを確認。ACoS・ROAS・CTRが異常値の場合のみ手動調整。</div><div class="step-tool">Google Looker Studio（無料）で全チャンネルを1画面に統合</div></div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num" style="background:#1E88E5">月1</div>
+        <div><div class="step-title">コンテンツ＆キーワード更新（2時間）</div><div class="step-desc">SNS動画・バナーの新素材を作成してBufferに30日分予約。キーワードのネガティブ追加・新キーワード追加。</div><div class="step-tool">Canva Pro + Buffer + Amazon広告コンソール</div></div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num" style="background:#2196F3">四半期</div>
+        <div><div class="step-title">大型セール・季節対応（半日）</div><div class="step-desc">プライムデー・楽天スーパーSALE・年末商戦などを年間カレンダーに事前登録。2週間前に予算を自動増額するルール設定。</div><div class="step-tool">Amazon広告「予算ルール」/ 楽天RMSイベント設定</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="font-size:13px;font-weight:700;margin-bottom:10px;">🛠️ 推奨ツールスタック（月3,000〜5,000円程度）</div>
+  <div class="grid-3">
+    <div class="tool-card"><div class="tool-name">📊 Google Looker Studio</div><div class="tool-desc">全広告データを1画面に統合。毎週自動でダッシュボード更新。</div><div class="tool-price">無料</div></div>
+    <div class="tool-card"><div class="tool-name">🎨 Canva Pro</div><div class="tool-desc">バナー・SNS投稿のテンプレート量産。マジックリサイズで全サイズ一括変換。AI画像生成対応。</div><div class="tool-price">約1,500円/月</div></div>
+    <div class="tool-card"><div class="tool-name">📅 Buffer</div><div class="tool-desc">Instagram・TikTok・Facebook・Xへの投稿を一括スケジュール管理。最適時間を自動提案。</div><div class="tool-price">無料〜1,500円/月</div></div>
+    <div class="tool-card"><div class="tool-name">⚡ Make（旧Integromat）</div><div class="tool-desc">「注文→スプレッドシート記録→Slack通知」などのワークフローをノーコードで構築。</div><div class="tool-price">無料〜1,200円/月</div></div>
+    <div class="tool-card"><div class="tool-name">🏪 Google Merchant Center</div><div class="tool-desc">自社サイトの商品情報をGoogleショッピングに自動連携。価格・在庫が自動反映。</div><div class="tool-price">無料</div></div>
+    <div class="tool-card"><div class="tool-name">📱 Meta Business Suite</div><div class="tool-desc">Instagram＋Facebook広告を一元管理。Advantage+でAI自動最適化。投稿スケジュールも可能。</div><div class="tool-price">無料（広告費別）</div></div>
+  </div>
+
+  <div class="tip" style="margin-top:16px">💡 <strong>SNSコンテンツ自動化の核心：</strong> 月1回2時間でReels 12本・写真30枚・バナー10種を一気に制作 → Bufferで30日分を予約投稿 → バズった投稿を即座に広告クリエイティブに転用。これだけで毎日自動発信が回る。</div>
+</div>
+
+<!-- ─── KPI ─── -->
+<div class="section" id="sec-kpi">
+  <div class="page-header">
+    <div class="page-title">📈 KPIボード</div>
+    <div class="page-desc">プラットフォーム別の数字を一元管理</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
+    <div class="card"><div class="card-head"><span style="font-size:13px;font-weight:700;">📊 売上比較チャート</span></div><div class="card-body"><div class="chart-wrap"><canvas id="kpiChart"></canvas></div></div></div>
+    <div class="card"><div class="card-head"><span style="font-size:13px;font-weight:700;">💡 広告費内訳</span></div><div class="card-body"><div class="chart-wrap"><canvas id="adChart"></canvas></div></div></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head"><span class="card-icon">🛒</span><div class="card-title">Amazon</div></div>
+      <div class="card-body">
+        <div class="field-label">月間売上</div><div class="kpi-row"><input class="kpi-in" type="number" data-id="kpi-amz-sales" placeholder="0"><span class="kpi-unit">円</span></div>
+        <div class="field-label" style="margin-top:8px">広告費</div><div class="kpi-row"><input class="kpi-in" type="number" data-id="kpi-amz-ad" placeholder="0"><span class="kpi-unit">円</span></div>
+        <div class="field-label" style="margin-top:8px">ACoS</div><div class="kpi-row"><input class="kpi-in" type="number" data-id="kpi-amz-acos" placeholder="0"><span class="kpi-unit">%</span></div>
+        <div class="field-label" style="margin-top:8px">メモ</div><textarea class="result-ta" rows="2" data-id="kpi-amz-note" placeholder="今月の状況..."></textarea>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="card-icon">🔴</span><div class="card-title">楽天市場</div></div>
+      <div class="card-body">
+        <div class="field-label">月間売上</div><div class="kpi-row"><input class="kpi-in" type="number" data-id="kpi-rak-sales" placeholder="0"><span class="kpi-unit">円</span></div>
+        <div class="field-label" style="margin-top:8px">広告費</div><div class="kpi-row"><input class="kpi-in" type="number" data-id="kpi-rak-ad" placeholder="0"><span class="kpi-unit">円</span></div>
+        <div class="field-label" style="margin-top:8px">ROAS</div><div class="kpi-row"><input class="kpi-in" type="number" data-id="kpi-rak-roas" placeholder="0"><span class="kpi-unit">%</span></div>
+        <div class="field-label" style="margin-top:8px">メモ</div><textarea class="result-ta" rows="2" data-id="kpi-rak-note" placeholder="今月の状況..."></textarea>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="card-icon">💜</span><div class="card-title">Yahoo!ショッピング</div></div>
+      <div class="card-body">
+        <div class="field-label">月間売上</div><div class="kpi-row"><input class="kpi-in" type="number" data-id="kpi-yhoo-sales" placeholder="0"><span class="kpi-unit">円</span></div>
+        <div class="field-label" style="margin-top:8px">広告費</div><div class="kpi-row"><input class="kpi-in" type="number" data-id="kpi-yhoo-ad" placeholder="0"><span class="kpi-unit">円</span></div>
+        <div class="field-label" style="margin-top:8px">メモ</div><textarea class="result-ta" rows="2" data-id="kpi-yhoo-note" placeholder="今月の状況..."></textarea>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="card-icon">🌿</span><div class="card-title">epsomsalt.jp</div></div>
+      <div class="card-body">
+        <div class="field-label">月間売上</div><div class="kpi-row"><input class="kpi-in" type="number" data-id="kpi-ep-sales" placeholder="0"><span class="kpi-unit">円</span></div>
+        <div class="field-label" style="margin-top:8px">広告費（Google+Meta）</div><div class="kpi-row"><input class="kpi-in" type="number" data-id="kpi-ep-ad" placeholder="0"><span class="kpi-unit">円</span></div>
+        <div class="field-label" style="margin-top:8px">定期購入者数</div><div class="kpi-row"><input class="kpi-in" type="number" data-id="kpi-ep-sub" placeholder="0"><span class="kpi-unit">人</span></div>
+        <div class="field-label" style="margin-top:8px">メモ</div><textarea class="result-ta" rows="2" data-id="kpi-ep-note" placeholder="今月の状況..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:12px">
+    <div class="card-head"><span style="font-size:13px;font-weight:700">📊 合計サマリー</span></div>
+    <div class="card-body">
+      <table class="kpi-table">
+        <thead><tr><th>プラットフォーム</th><th>月間売上</th><th>広告費</th><th>ROAS/ACoS</th></tr></thead>
+        <tbody>
+          <tr><td>Amazon</td><td id="s-amz-sales">¥0</td><td id="s-amz-ad">¥0</td><td id="s-amz-kpi">—</td></tr>
+          <tr><td>楽天</td><td id="s-rak-sales">¥0</td><td id="s-rak-ad">¥0</td><td id="s-rak-kpi">—</td></tr>
+          <tr><td>Yahoo!</td><td id="s-yhoo-sales">¥0</td><td id="s-yhoo-ad">¥0</td><td id="s-yhoo-kpi">—</td></tr>
+          <tr><td>epsomsalt.jp</td><td id="s-ep-sales">¥0</td><td id="s-ep-ad">¥0</td><td id="s-ep-kpi">—</td></tr>
+          <tr style="font-weight:700;background:#f5f2ed"><td>合計</td><td id="s-total-sales">¥0</td><td id="s-total-ad">¥0</td><td id="s-total-kpi">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+const SK = 'epsomsalt_v2';
+let store = {};
+try { store = JSON.parse(localStorage.getItem(SK)) || {}; } catch{}
+const save = () => localStorage.setItem(SK, JSON.stringify(store));
+
+// ─── NAV ───
+function show(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  if (id === 'kpi') { setTimeout(initCharts, 50); updateSummary(); }
+  if (id === 'home') setTimeout(initHomeChart, 50);
+}
+
+// ─── PLATFORM TABS ───
+function showPlatform(id, btn) {
+  document.querySelectorAll('.platform-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.ptab').forEach(b => b.classList.remove('active'));
+  document.getElementById('ps-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ─── CHECKLISTS ───
+function initChecks() {
+  document.querySelectorAll('.ci[data-id]').forEach(ci => {
+    const id = ci.dataset.id;
+    if (store[id]) ci.classList.add('done');
+    ci.addEventListener('click', () => {
+      const done = !ci.classList.contains('done');
+      ci.classList.toggle('done', done);
+      if (done) { ci.classList.add('just-done'); setTimeout(() => ci.classList.remove('just-done'), 300); }
+      store[id] = done; save(); updateAll();
+    });
+  });
+}
+
+// ─── TEXT FIELDS ───
+function initFields() {
+  document.querySelectorAll('[data-id]').forEach(el => {
+    if (el.classList.contains('ci')) return;
+    const id = el.dataset.id;
+    if (store[id] !== undefined) el.value = store[id];
+    el.addEventListener('input', () => {
+      store[id] = el.value; save();
+      if (id.startsWith('kpi-')) { updateSummary(); updateCharts(); }
+      if (id.startsWith('h-') || id === 'today-focus') {}
+      updateKpiCount();
+    });
+  });
+}
+
+// ─── PROGRESS ───
+function countSection(selector) {
+  const items = [...document.querySelectorAll(selector + ' .ci[data-id]')];
+  const done = items.filter(i => i.classList.contains('done')).length;
+  return { done, total: items.length };
+}
+
+function updateAll() {
+  const mkt = countSection('#sec-marketing');
+  const prd = countSection('#sec-production');
+  const total = mkt.total + prd.total;
+  const done = mkt.done + prd.done;
+  const pct = total ? Math.round(done / total * 100) : 0;
+
+  // sidebar
+  document.getElementById('sf-fill').style.width = pct + '%';
+  document.getElementById('sf-num').textContent = done + ' / ' + total + ' タスク完了';
+
+  // home stats
+  set('h-mkt-done', mkt.done);
+  set('h-mkt-pct', mkt.total ? Math.round(mkt.done/mkt.total*100)+'%' : '0%');
+  set('h-prd-done', prd.done);
+  set('h-prd-pct', prd.total ? Math.round(prd.done/prd.total*100)+'%' : '0%');
+  set('qa-mkt', mkt.done+'/'+mkt.total+' 完了');
+  set('qa-prd', prd.done+'/'+prd.total+' 完了');
+
+  // phase mini bars
+  updatePhase('pf-mkt1', '#sec-marketing .phase-block:nth-child(2)');
+  updatePhase('pf-mkt2', '#sec-marketing .phase-block:nth-child(3)');
+  updatePhase('pf-mkt3', '#sec-marketing .phase-block:nth-child(4)');
+  updatePhase('pf-mkt4', '#sec-marketing .phase-block:nth-child(5)');
+  updatePhase('pf-mkt5', '#sec-marketing .phase-block:nth-child(6)');
+  updatePhase('pf-prdA', '#sec-production .phase-block:nth-child(2)');
+  updatePhase('pf-prdB', '#sec-production .phase-block:nth-child(3)');
+  updatePhase('pf-prdC', '#sec-production .phase-block:nth-child(4)');
+
+  updateHomeChart(mkt, prd);
+  updateKpiCount();
+}
+
+function updatePhase(fillId, sel) {
+  const sec = document.querySelector(sel);
+  const el = document.getElementById(fillId);
+  if (!sec || !el) return;
+  const items = [...sec.querySelectorAll('.ci[data-id]')];
+  const done = items.filter(i => i.classList.contains('done')).length;
+  el.style.width = items.length ? (done/items.length*100)+'%' : '0%';
+}
+
+function set(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+
+function updateKpiCount() {
+  let count = 0;
+  document.querySelectorAll('.kpi-in[data-id]').forEach(el => { if (el.value && parseFloat(el.value) > 0) count++; });
+  set('h-kpi-count', count);
+  set('qa-kpi', count + '項目入力済み');
+}
+
+// ─── HOME CHART ───
+let homeChartInst = null;
+function initHomeChart() {
+  const ctx = document.getElementById('homeChart');
+  if (!ctx) return;
+  const mkt = countSection('#sec-marketing');
+  const prd = countSection('#sec-production');
+  if (homeChartInst) { homeChartInst.destroy(); homeChartInst = null; }
+  homeChartInst = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['マーケティング完了', 'マーケティング残', '生産完了', '生産残'],
+      datasets: [{ data: [mkt.done, mkt.total-mkt.done, prd.done, prd.total-prd.done], backgroundColor: ['#40916C','#D8F3DC','#e8826a','#fff0ec'], borderWidth: 0 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 12 } } } }
+  });
+}
+function updateHomeChart(mkt, prd) {
+  if (!homeChartInst) return;
+  homeChartInst.data.datasets[0].data = [mkt.done, mkt.total-mkt.done, prd.done, prd.total-prd.done];
+  homeChartInst.update();
+}
+
+// ─── KPI CHARTS ───
+let kpiChartInst = null, adChartInst = null;
+function initCharts() {
+  const kpiCtx = document.getElementById('kpiChart');
+  const adCtx = document.getElementById('adChart');
+  const getVal = id => parseFloat(store[id]) || 0;
+  const salesData = [getVal('kpi-amz-sales'), getVal('kpi-rak-sales'), getVal('kpi-yhoo-sales'), getVal('kpi-ep-sales')];
+  const adData = [getVal('kpi-amz-ad'), getVal('kpi-rak-ad'), getVal('kpi-yhoo-ad'), getVal('kpi-ep-ad')];
+  const labels = ['Amazon', '楽天', 'Yahoo!', '自社'];
+
+  if (kpiChartInst) kpiChartInst.destroy();
+  kpiChartInst = new Chart(kpiCtx, {
+    type: 'bar',
+    data: { labels, datasets: [{ label: '月間売上', data: salesData, backgroundColor: ['#FF9900','#BF0000','#6001D2','#2E7D32'], borderRadius: 6 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => '¥'+v.toLocaleString() } } } }
+  });
+
+  if (adChartInst) adChartInst.destroy();
+  adChartInst = new Chart(adCtx, {
+    type: 'pie',
+    data: { labels, datasets: [{ data: adData, backgroundColor: ['#FF9900','#BF0000','#6001D2','#2E7D32'], borderWidth: 0 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 12 } } } }
+  });
+}
+function updateCharts() {
+  if (!kpiChartInst || !adChartInst) return;
+  const getVal = id => parseFloat(store[id]) || 0;
+  kpiChartInst.data.datasets[0].data = ['kpi-amz-sales','kpi-rak-sales','kpi-yhoo-sales','kpi-ep-sales'].map(getVal);
+  adChartInst.data.datasets[0].data = ['kpi-amz-ad','kpi-rak-ad','kpi-yhoo-ad','kpi-ep-ad'].map(getVal);
+  kpiChartInst.update(); adChartInst.update();
+  updateSummary();
+}
+
+function updateSummary() {
+  const getVal = id => parseFloat(store[id]) || 0;
+  const fmt = v => '¥' + v.toLocaleString();
+  const platforms = [
+    { key: 'amz', kpi: getVal('kpi-amz-acos') + '%（ACoS）' },
+    { key: 'rak', kpi: getVal('kpi-rak-roas') + '%（ROAS）' },
+    { key: 'yhoo', kpi: '—' },
+    { key: 'ep', kpi: getVal('kpi-ep-sub') + '人（定期）' }
+  ];
+  let totalSales = 0, totalAd = 0;
+  platforms.forEach(p => {
+    const s = getVal('kpi-'+p.key+'-sales'), a = getVal('kpi-'+p.key+'-ad');
+    set('s-'+p.key+'-sales', fmt(s));
+    set('s-'+p.key+'-ad', fmt(a));
+    set('s-'+p.key+'-kpi', p.kpi);
+    totalSales += s; totalAd += a;
+  });
+  set('s-total-sales', fmt(totalSales));
+  set('s-total-ad', fmt(totalAd));
+  const totalRoas = totalAd > 0 ? Math.round(totalSales/totalAd*100) : 0;
+  set('s-total-kpi', totalAd > 0 ? totalRoas + '%（ROAS）' : '—');
+}
+
+// ─── DATE ───
+const d = new Date();
+const dateStr = d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日（' + ['日','月','火','水','木','金','土'][d.getDay()] + '）';
+const dateEl = document.getElementById('home-date');
+if (dateEl) dateEl.textContent = dateStr;
+
+// ─── INIT ───
+initChecks();
+initFields();
+updateAll();
+setTimeout(initHomeChart, 100);
+</script>
+</body>
+</html>
