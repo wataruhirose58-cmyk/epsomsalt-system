@@ -209,7 +209,6 @@ body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;backgroun
     <div class="nav-group">業務フロー</div>
     <div class="nav-item" onclick="show('marketing',this)"><span class="nav-icon">📊</span>マーケティング</div>
     <div class="nav-item" onclick="show('dev',this)"><span class="nav-icon">🔬</span>開発</div>
-    <div class="nav-item" onclick="show('production',this)"><span class="nav-icon">🏭</span>生産</div>
     <div class="nav-group">広告・集客</div>
     <div class="nav-item" onclick="show('ads',this)"><span class="nav-icon">📣</span>広告戦略</div>
     <div class="nav-item" onclick="show('automation',this)"><span class="nav-icon">⚙️</span>自動化プラン</div>
@@ -243,11 +242,6 @@ body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;backgroun
       <div class="stat-num" id="h-dev-done" style="color:#7B61FF">0</div>
       <div class="stat-label">開発完了タスク</div>
       <div class="stat-sub" style="color:#7B61FF" id="h-dev-pct">0%</div>
-    </div>
-    <div class="stat-card" style="border-top:3px solid var(--accent)">
-      <div class="stat-num" id="h-prd-done" style="color:var(--accent)">0</div>
-      <div class="stat-label">生産完了タスク</div>
-      <div class="stat-sub" style="color:var(--accent)" id="h-prd-pct">0%</div>
     </div>
     <div class="stat-card" style="border-top:3px solid var(--blue)">
       <div class="stat-num" style="color:var(--blue)">5</div>
@@ -291,11 +285,6 @@ body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;backgroun
       <div class="quick-icon">🔬</div>
       <div class="quick-title">開発</div>
       <div class="quick-stat" id="qa-dev">0/0 完了</div>
-    </div>
-    <div class="quick-card" onclick="show('production',document.querySelector('[onclick*=production]'))">
-      <div class="quick-icon">🏭</div>
-      <div class="quick-title">生産フロー</div>
-      <div class="quick-stat" id="qa-prd">0/0 完了</div>
     </div>
     <div class="quick-card" onclick="show('ads',document.querySelector('[onclick*=ads]'))">
       <div class="quick-icon">📣</div>
@@ -721,121 +710,6 @@ body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;backgroun
   </div>
 </div>
 
-<!-- ─── PRODUCTION ─── -->
-<div class="section" id="sec-production">
-  <div class="page-header">
-    <div class="page-title">🏭 生産フロー</div>
-    <div class="page-desc">受注 → 本生産 → 出荷 → 在庫管理</div>
-  </div>
-
-  <div class="phase-block">
-    <div class="phase-head">
-      <div class="phase-dot" style="background:#6a9fe8"></div>
-      <div><div class="phase-name">Phase A：受注</div><div class="phase-note">工場に見やすく・段取りよく</div></div>
-      <div class="phase-progress"><div class="phase-fill" style="background:#6a9fe8" id="pf-prdA"></div></div>
-    </div>
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-head"><span class="card-icon">📥</span><div><div class="card-title">受注データ集計</div><span class="card-policy" style="background:var(--blue-bg);color:var(--blue)">工場に見やすく</span></div></div>
-        <div class="card-body">
-          <div class="chips"><span class="chip chip-item">スケネコ</span></div>
-          <div class="checklist">
-            <label class="ci" data-id="p-A1a"><div class="cb"></div><span class="ct">受注データ集計</span></label>
-            <label class="ci" data-id="p-A1b"><div class="cb"></div><span class="ct">伝票印刷</span></label>
-            <label class="ci" data-id="p-A1c"><div class="cb"></div><span class="ct">発送データを送信</span></label>
-          </div>
-          <div class="kpi-row"><input class="kpi-in" type="number" data-id="p-A1-kpi" placeholder="0"><span class="kpi-unit">件（受注数）</span></div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-head"><span class="card-icon">📅</span><div><div class="card-title">生産予定</div><span class="card-policy" style="background:var(--blue-bg);color:var(--blue)">段取りが命</span></div></div>
-        <div class="card-body">
-          <div class="checklist">
-            <label class="ci" data-id="p-A2a"><div class="cb"></div><span class="ct">生産予定の作成</span></label>
-            <label class="ci" data-id="p-A2b"><div class="cb"></div><span class="ct">人員配置の決定</span></label>
-          </div>
-          <div class="field-label">生産予定メモ</div>
-          <textarea class="result-ta" rows="2" data-id="p-A2-note" placeholder="生産予定日・数量..."></textarea>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="phase-block">
-    <div class="phase-head">
-      <div class="phase-dot" style="background:var(--accent)"></div>
-      <div><div class="phase-name">Phase B：生産</div><div class="phase-note">チェックで品質を守る</div></div>
-      <div class="phase-progress"><div class="phase-fill" style="background:var(--accent)" id="pf-prdB"></div></div>
-    </div>
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-head"><span class="card-icon">🔧</span><div><div class="card-title">生産準備</div></div></div>
-        <div class="card-body">
-          <div class="chips"><span class="chip chip-item">ダンボール</span><span class="chip chip-item">リーフレット</span><span class="chip chip-item">手紙</span><span class="chip chip-item">原材料</span><span class="chip chip-item">パッケージ</span></div>
-          <div class="checklist">
-            <label class="ci" data-id="p-B1a"><div class="cb"></div><span class="ct">準備完了確認</span></label>
-            <label class="ci" data-id="p-B1b"><div class="cb"></div><span class="ct">見込み生産数の確認</span></label>
-            <label class="ci" data-id="p-B1c"><div class="cb"></div><span class="ct">材料配合・オペレーション確認</span></label>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-head"><span class="card-icon">🏗️</span><div><div class="card-title">本生産</div></div></div>
-        <div class="card-body">
-          <div class="checklist">
-            <label class="ci" data-id="p-B2a"><div class="cb"></div><span class="ct">本生産開始</span></label>
-            <label class="ci" data-id="p-B2b"><div class="cb"></div><span class="ct">品質チェック</span></label>
-            <label class="ci" data-id="p-B2c"><div class="cb"></div><span class="ct">箱詰め</span></label>
-          </div>
-          <div class="kpi-row"><input class="kpi-in" type="number" data-id="p-B2-kpi" placeholder="0"><span class="kpi-unit">個（生産数）</span></div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-head"><span class="card-icon">📦</span><div><div class="card-title">発送・連絡</div></div></div>
-        <div class="card-body">
-          <div class="checklist">
-            <label class="ci" data-id="p-B3a"><div class="cb"></div><span class="ct">発送処理</span></label>
-            <label class="ci" data-id="p-B3b"><div class="cb"></div><span class="ct">発送連絡（追跡番号）</span></label>
-            <label class="ci" data-id="p-B3c"><div class="cb"></div><span class="ct">掃除・片付け</span></label>
-          </div>
-          <div class="kpi-row"><input class="kpi-in" type="number" data-id="p-B3-kpi" placeholder="0"><span class="kpi-unit">件（発送数）</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="phase-block">
-    <div class="phase-head">
-      <div class="phase-dot" style="background:#4caf82"></div>
-      <div><div class="phase-name">Phase C：在庫管理</div><div class="phase-note">切らさない・余らせない</div></div>
-      <div class="phase-progress"><div class="phase-fill" style="background:#4caf82" id="pf-prdC"></div></div>
-    </div>
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-head"><span class="card-icon">🧴</span><div><div class="card-title">原料在庫</div></div></div>
-        <div class="card-body">
-          <div class="checklist">
-            <label class="ci" data-id="p-C1a"><div class="cb"></div><span class="ct">原料在庫確認</span></label>
-            <label class="ci" data-id="p-C1b"><div class="cb"></div><span class="ct">発注点確認・発注</span></label>
-          </div>
-          <div class="kpi-row"><input class="kpi-in" type="number" data-id="p-C1-kpi" placeholder="0"><span class="kpi-unit">kg（在庫量）</span></div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-head"><span class="card-icon">📦</span><div><div class="card-title">資材・消耗品</div></div></div>
-        <div class="card-body">
-          <div class="checklist">
-            <label class="ci" data-id="p-C2a"><div class="cb"></div><span class="ct">資材在庫確認</span></label>
-            <label class="ci" data-id="p-C2b"><div class="cb"></div><span class="ct">消耗品確認</span></label>
-            <label class="ci" data-id="p-C2c"><div class="cb"></div><span class="ct">洗濯物・清潔管理</span></label>
-          </div>
-          <div class="field-label">在庫メモ</div>
-          <textarea class="result-ta" rows="2" data-id="p-C2-note" placeholder="在庫状況・発注予定..."></textarea>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- ─── ADS ─── -->
 <div class="section" id="sec-ads">
@@ -1161,9 +1035,8 @@ function countSection(selector) {
 function updateAll() {
   const mkt = countSection('#sec-marketing');
   const dev = countSection('#sec-dev');
-  const prd = countSection('#sec-production');
-  const total = mkt.total + dev.total + prd.total;
-  const done = mkt.done + dev.done + prd.done;
+  const total = mkt.total + dev.total;
+  const done = mkt.done + dev.done;
   const pct = total ? Math.round(done / total * 100) : 0;
 
   // sidebar
@@ -1175,11 +1048,8 @@ function updateAll() {
   set('h-mkt-pct', mkt.total ? Math.round(mkt.done/mkt.total*100)+'%' : '0%');
   set('h-dev-done', dev.done);
   set('h-dev-pct', dev.total ? Math.round(dev.done/dev.total*100)+'%' : '0%');
-  set('h-prd-done', prd.done);
-  set('h-prd-pct', prd.total ? Math.round(prd.done/prd.total*100)+'%' : '0%');
   set('qa-mkt', mkt.done+'/'+mkt.total+' 完了');
   set('qa-dev', dev.done+'/'+dev.total+' 完了');
-  set('qa-prd', prd.done+'/'+prd.total+' 完了');
 
   // phase mini bars
   updatePhase('pf-mkt1', '#sec-marketing .phase-block:nth-child(2)');
@@ -1192,11 +1062,8 @@ function updateAll() {
   updatePhase('pf-devC', '#sec-dev .phase-block:nth-child(4)');
   updatePhase('pf-devD', '#sec-dev .phase-block:nth-child(5)');
   updatePhase('pf-devE', '#sec-dev .phase-block:nth-child(6)');
-  updatePhase('pf-prdA', '#sec-production .phase-block:nth-child(2)');
-  updatePhase('pf-prdB', '#sec-production .phase-block:nth-child(3)');
-  updatePhase('pf-prdC', '#sec-production .phase-block:nth-child(4)');
 
-  updateHomeChart(mkt, dev, prd);
+  updateHomeChart(mkt, dev);
   updateKpiCount();
 }
 
@@ -1225,20 +1092,19 @@ function initHomeChart() {
   if (!ctx) return;
   const mkt = countSection('#sec-marketing');
   const dev = countSection('#sec-dev');
-  const prd = countSection('#sec-production');
   if (homeChartInst) { homeChartInst.destroy(); homeChartInst = null; }
   homeChartInst = new Chart(ctx, {
     type: 'doughnut',
     data: {
-      labels: ['マーケティング完了', 'マーケティング残', '開発完了', '開発残', '生産完了', '生産残'],
-      datasets: [{ data: [mkt.done, mkt.total-mkt.done, dev.done, dev.total-dev.done, prd.done, prd.total-prd.done], backgroundColor: ['#40916C','#D8F3DC','#7B61FF','#EDE9FF','#e8826a','#fff0ec'], borderWidth: 0 }]
+      labels: ['マーケティング完了', 'マーケティング残', '開発完了', '開発残'],
+      datasets: [{ data: [mkt.done, mkt.total-mkt.done, dev.done, dev.total-dev.done], backgroundColor: ['#40916C','#D8F3DC','#7B61FF','#EDE9FF'], borderWidth: 0 }]
     },
     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 12 } } } }
   });
 }
-function updateHomeChart(mkt, dev, prd) {
+function updateHomeChart(mkt, dev) {
   if (!homeChartInst) return;
-  homeChartInst.data.datasets[0].data = [mkt.done, mkt.total-mkt.done, dev.done, dev.total-dev.done, prd.done, prd.total-prd.done];
+  homeChartInst.data.datasets[0].data = [mkt.done, mkt.total-mkt.done, dev.done, dev.total-dev.done];
   homeChartInst.update();
 }
 
