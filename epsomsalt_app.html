@@ -208,6 +208,7 @@ body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;backgroun
     <div class="nav-item active" onclick="show('home',this)"><span class="nav-icon">🏠</span>ダッシュボード</div>
     <div class="nav-group">業務フロー</div>
     <div class="nav-item" onclick="show('marketing',this)"><span class="nav-icon">📊</span>マーケティング</div>
+    <div class="nav-item" onclick="show('dev',this)"><span class="nav-icon">🔬</span>開発</div>
     <div class="nav-item" onclick="show('production',this)"><span class="nav-icon">🏭</span>生産</div>
     <div class="nav-group">広告・集客</div>
     <div class="nav-item" onclick="show('ads',this)"><span class="nav-icon">📣</span>広告戦略</div>
@@ -237,6 +238,11 @@ body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;backgroun
       <div class="stat-num" id="h-mkt-done" style="color:var(--brand-light)">0</div>
       <div class="stat-label">マーケティング完了タスク</div>
       <div class="stat-sub" style="color:var(--brand-light)" id="h-mkt-pct">0%</div>
+    </div>
+    <div class="stat-card" style="border-top:3px solid #7B61FF">
+      <div class="stat-num" id="h-dev-done" style="color:#7B61FF">0</div>
+      <div class="stat-label">開発完了タスク</div>
+      <div class="stat-sub" style="color:#7B61FF" id="h-dev-pct">0%</div>
     </div>
     <div class="stat-card" style="border-top:3px solid var(--accent)">
       <div class="stat-num" id="h-prd-done" style="color:var(--accent)">0</div>
@@ -280,6 +286,11 @@ body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;backgroun
       <div class="quick-icon">📊</div>
       <div class="quick-title">マーケティング</div>
       <div class="quick-stat" id="qa-mkt">0/0 完了</div>
+    </div>
+    <div class="quick-card" onclick="show('dev',document.querySelector('[onclick*=dev]'))">
+      <div class="quick-icon">🔬</div>
+      <div class="quick-title">開発</div>
+      <div class="quick-stat" id="qa-dev">0/0 完了</div>
     </div>
     <div class="quick-card" onclick="show('production',document.querySelector('[onclick*=production]'))">
       <div class="quick-icon">🏭</div>
@@ -505,6 +516,205 @@ body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;backgroun
             <label class="ci" data-id="m-m2d"><div class="cb"></div><span class="ct">売れ数分析・改善</span></label>
           </div>
           <div class="kpi-row"><input class="kpi-in" type="number" data-id="m-m2-kpi" placeholder="0"><span class="kpi-unit">個/月（売上数）</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DEVELOPMENT ─── -->
+<div class="section" id="sec-dev">
+  <div class="page-header">
+    <div class="page-title">🔬 開発フロー</div>
+    <div class="page-desc">肌の問題把握 → 原材料調達 → 調理・実験 → ラベル・容器 → 原価・設備</div>
+  </div>
+
+  <!-- Phase A: 肌の問題点リサーチ -->
+  <div class="phase-block">
+    <div class="phase-head">
+      <div class="phase-dot" style="background:#7B61FF"></div>
+      <div><div class="phase-name">Phase A：肌の問題点リサーチ</div><div class="phase-note">困っている人の肌を深く知る</div></div>
+      <div class="phase-progress"><div class="phase-fill" style="background:#7B61FF" id="pf-devA"></div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><span class="card-icon">🩺</span><div><div class="card-title">肌の問題調査</div><span class="card-policy" style="background:#F0EDFF;color:#7B61FF">データ分析・優先順位の選択</span></div></div>
+        <div class="card-body">
+          <div class="field-label">必要なもの</div>
+          <div class="chips"><span class="chip chip-item">医師・肌サンプル</span><span class="chip chip-info">データ</span><span class="chip chip-info">モニター募集</span></div>
+          <div class="field-label">行動チェックリスト</div>
+          <div class="checklist">
+            <label class="ci" data-id="d-A1a"><div class="cb"></div><span class="ct">肌の問題調査（データ分析）</span></label>
+            <label class="ci" data-id="d-A1b"><div class="cb"></div><span class="ct">優先順位の選択</span></label>
+            <label class="ci" data-id="d-A1c"><div class="cb"></div><span class="ct">人口数・市場規模の確認</span></label>
+            <label class="ci" data-id="d-A1d"><div class="cb"></div><span class="ct">モニター募集・肌サンプル収集</span></label>
+          </div>
+          <div class="field-label">結果報告</div>
+          <textarea class="result-ta" rows="2" data-id="d-A1-note" placeholder="調査結果・気づき..."></textarea>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">🧬</span><div><div class="card-title">原因の調査</div><span class="card-policy" style="background:#F0EDFF;color:#7B61FF">本質的な原因を追う</span></div></div>
+        <div class="card-body">
+          <div class="checklist">
+            <label class="ci" data-id="d-A2a"><div class="cb"></div><span class="ct">肌サンプルの分析</span></label>
+            <label class="ci" data-id="d-A2b"><div class="cb"></div><span class="ct">本原因の特定</span></label>
+            <label class="ci" data-id="d-A2c"><div class="cb"></div><span class="ct">医師の評価取得</span></label>
+            <label class="ci" data-id="d-A2d"><div class="cb"></div><span class="ct">対処方法の調査</span></label>
+          </div>
+          <div class="field-label">結果報告</div>
+          <textarea class="result-ta" rows="2" data-id="d-A2-note" placeholder="原因・対処方法..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase B: 原材料調達 -->
+  <div class="phase-block">
+    <div class="phase-head">
+      <div class="phase-dot" style="background:#2E9C6B"></div>
+      <div><div class="phase-name">Phase B：原材料調達</div><div class="phase-note">肌に優しい原料を選ぶ</div></div>
+      <div class="phase-progress"><div class="phase-fill" style="background:#2E9C6B" id="pf-devB"></div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><span class="card-icon">🌿</span><div><div class="card-title">原料の選択・調達</div><span class="card-policy" style="background:var(--brand-pale);color:var(--brand-mid)">成分分析で選ぶ</span></div></div>
+        <div class="card-body">
+          <div class="chips"><span class="chip chip-item">原料サンプル</span><span class="chip chip-item">原料資材価格</span><span class="chip chip-info">モニター募集</span></div>
+          <div class="checklist">
+            <label class="ci" data-id="d-B1a"><div class="cb"></div><span class="ct">原料の選択（成分分析）</span></label>
+            <label class="ci" data-id="d-B1b"><div class="cb"></div><span class="ct">必要量の算出</span></label>
+            <label class="ci" data-id="d-B1c"><div class="cb"></div><span class="ct">仕入れ先の確認</span></label>
+            <label class="ci" data-id="d-B1d"><div class="cb"></div><span class="ct">原料サンプル取得・確認</span></label>
+          </div>
+          <div class="kpi-row"><input class="kpi-in" type="number" data-id="d-B1-kpi" placeholder="0"><span class="kpi-unit">円/kg（原料単価）</span></div>
+          <div class="field-label">メモ</div>
+          <textarea class="result-ta" rows="2" data-id="d-B1-note" placeholder="原料情報・メモ..."></textarea>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">📦</span><div><div class="card-title">資材・設備確認</div><span class="card-policy" style="background:var(--brand-pale);color:var(--brand-mid)">手作業・機械情報</span></div></div>
+        <div class="card-body">
+          <div class="checklist">
+            <label class="ci" data-id="d-B2a"><div class="cb"></div><span class="ct">資材の調達計画</span></label>
+            <label class="ci" data-id="d-B2b"><div class="cb"></div><span class="ct">設備・機械情報確認</span></label>
+            <label class="ci" data-id="d-B2c"><div class="cb"></div><span class="ct">手作業ライン確認</span></label>
+          </div>
+          <div class="field-label">メモ</div>
+          <textarea class="result-ta" rows="2" data-id="d-B2-note" placeholder="設備・資材メモ..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase C: 調理・実験 -->
+  <div class="phase-block">
+    <div class="phase-head">
+      <div class="phase-dot" style="background:#E8822A"></div>
+      <div><div class="phase-name">Phase C：調理・実験</div><div class="phase-note">ベスト処方を繰り返し追求</div></div>
+      <div class="phase-progress"><div class="phase-fill" style="background:#E8822A" id="pf-devC"></div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><span class="card-icon">⚗️</span><div><div class="card-title">試作・実験</div><span class="card-policy" style="background:#FFF5ED;color:#C05000">ベスト使用方法を見つける</span></div></div>
+        <div class="card-body">
+          <div class="chips"><span class="chip chip-item">原料</span><span class="chip chip-info">モニター</span><span class="chip chip-item">製品情報</span></div>
+          <div class="checklist">
+            <label class="ci" data-id="d-C1a"><div class="cb"></div><span class="ct">用途の選択</span></label>
+            <label class="ci" data-id="d-C1b"><div class="cb"></div><span class="ct">調理（試作）</span></label>
+            <label class="ci" data-id="d-C1c"><div class="cb"></div><span class="ct">自分使用・感触確認</span></label>
+            <label class="ci" data-id="d-C1d"><div class="cb"></div><span class="ct">モニター使用・フィードバック収集</span></label>
+            <label class="ci" data-id="d-C1e"><div class="cb"></div><span class="ct">繰り返し改善</span></label>
+          </div>
+          <div class="field-label">試作結果</div>
+          <textarea class="result-ta" rows="2" data-id="d-C1-note" placeholder="試作結果・改善点..."></textarea>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">📋</span><div><div class="card-title">レシピ・実験記録</div><span class="card-policy" style="background:#FFF5ED;color:#C05000">再現性を確保</span></div></div>
+        <div class="card-body">
+          <div class="checklist">
+            <label class="ci" data-id="d-C2a"><div class="cb"></div><span class="ct">レシピ作成（配合比率）</span></label>
+            <label class="ci" data-id="d-C2b"><div class="cb"></div><span class="ct">実験記録の文書化</span></label>
+            <label class="ci" data-id="d-C2c"><div class="cb"></div><span class="ct">効果測定</span></label>
+          </div>
+          <div class="field-label">レシピメモ</div>
+          <textarea class="result-ta" rows="3" data-id="d-C2-note" placeholder="配合・手順メモ..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase D: ラベル・容器 -->
+  <div class="phase-block">
+    <div class="phase-head">
+      <div class="phase-dot" style="background:#E8226A"></div>
+      <div><div class="phase-name">Phase D：ラベル・容器</div><div class="phase-note">当社基本パターンで統一</div></div>
+      <div class="phase-progress"><div class="phase-fill" style="background:#E8226A" id="pf-devD"></div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><span class="card-icon">🏷️</span><div><div class="card-title">ラベルデザイン</div><span class="card-policy" style="background:#FFF0F5;color:#C00060">真実の成分を伝える</span></div></div>
+        <div class="card-body">
+          <div class="checklist">
+            <label class="ci" data-id="d-D1a"><div class="cb"></div><span class="ct">デザイン作成</span></label>
+            <label class="ci" data-id="d-D1b"><div class="cb"></div><span class="ct">成分表・MSDS作成</span></label>
+            <label class="ci" data-id="d-D1c"><div class="cb"></div><span class="ct">成分分析表作成</span></label>
+            <label class="ci" data-id="d-D1d"><div class="cb"></div><span class="ct">サンプル印刷（1000枚）</span></label>
+            <label class="ci" data-id="d-D1e"><div class="cb"></div><span class="ct">パッケージシール確認</span></label>
+          </div>
+          <div class="field-label">メモ</div>
+          <textarea class="result-ta" rows="2" data-id="d-D1-note" placeholder="デザイン・印刷メモ..."></textarea>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">🫙</span><div><div class="card-title">容器の選択</div><span class="card-policy" style="background:#FFF0F5;color:#C00060">精品マスター確定</span></div></div>
+        <div class="card-body">
+          <div class="chips"><span class="chip chip-item">容器サンプル</span></div>
+          <div class="checklist">
+            <label class="ci" data-id="d-D2a"><div class="cb"></div><span class="ct">容器サンプル取得</span></label>
+            <label class="ci" data-id="d-D2b"><div class="cb"></div><span class="ct">容器実験（充填・密閉確認）</span></label>
+            <label class="ci" data-id="d-D2c"><div class="cb"></div><span class="ct">精品マスター作成</span></label>
+          </div>
+          <div class="field-label">容器メモ</div>
+          <textarea class="result-ta" rows="2" data-id="d-D2-note" placeholder="容器仕様・選定メモ..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase E: 原価・設備 -->
+  <div class="phase-block">
+    <div class="phase-head">
+      <div class="phase-dot" style="background:#1565C0"></div>
+      <div><div class="phase-name">Phase E：原価・設備</div><div class="phase-note">数字で見える化・本生産準備</div></div>
+      <div class="phase-progress"><div class="phase-fill" style="background:#1565C0" id="pf-devE"></div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><span class="card-icon">💰</span><div><div class="card-title">原価計算</div><span class="card-policy" style="background:var(--blue-bg);color:var(--blue)">製品マスターに登録</span></div></div>
+        <div class="card-body">
+          <div class="checklist">
+            <label class="ci" data-id="d-E1a"><div class="cb"></div><span class="ct">原価計算（原料＋資材＋労務）</span></label>
+            <label class="ci" data-id="d-E1b"><div class="cb"></div><span class="ct">製品マスター作成</span></label>
+            <label class="ci" data-id="d-E1c"><div class="cb"></div><span class="ct">原価表作成</span></label>
+            <label class="ci" data-id="d-E1d"><div class="cb"></div><span class="ct">売価設定（市場調査と照合）</span></label>
+          </div>
+          <div class="kpi-row"><input class="kpi-in" type="number" data-id="d-E1-cogs" placeholder="0"><span class="kpi-unit">円（原価）</span></div>
+          <div class="kpi-row"><input class="kpi-in" type="number" data-id="d-E1-price" placeholder="0"><span class="kpi-unit">円（売価）</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">🏭</span><div><div class="card-title">設備・本生産準備</div><span class="card-policy" style="background:var(--blue-bg);color:var(--blue)">本生産用機械の確認</span></div></div>
+        <div class="card-body">
+          <div class="chips"><span class="chip chip-item">機械情報</span></div>
+          <div class="checklist">
+            <label class="ci" data-id="d-E2a"><div class="cb"></div><span class="ct">本生産用機械の確認</span></label>
+            <label class="ci" data-id="d-E2b"><div class="cb"></div><span class="ct">生産ライン最終チェック</span></label>
+            <label class="ci" data-id="d-E2c"><div class="cb"></div><span class="ct">分析確認（成分・品質）</span></label>
+          </div>
+          <div class="field-label">設備メモ</div>
+          <textarea class="result-ta" rows="2" data-id="d-E2-note" placeholder="設備・機械メモ..."></textarea>
         </div>
       </div>
     </div>
@@ -950,9 +1160,10 @@ function countSection(selector) {
 
 function updateAll() {
   const mkt = countSection('#sec-marketing');
+  const dev = countSection('#sec-dev');
   const prd = countSection('#sec-production');
-  const total = mkt.total + prd.total;
-  const done = mkt.done + prd.done;
+  const total = mkt.total + dev.total + prd.total;
+  const done = mkt.done + dev.done + prd.done;
   const pct = total ? Math.round(done / total * 100) : 0;
 
   // sidebar
@@ -962,9 +1173,12 @@ function updateAll() {
   // home stats
   set('h-mkt-done', mkt.done);
   set('h-mkt-pct', mkt.total ? Math.round(mkt.done/mkt.total*100)+'%' : '0%');
+  set('h-dev-done', dev.done);
+  set('h-dev-pct', dev.total ? Math.round(dev.done/dev.total*100)+'%' : '0%');
   set('h-prd-done', prd.done);
   set('h-prd-pct', prd.total ? Math.round(prd.done/prd.total*100)+'%' : '0%');
   set('qa-mkt', mkt.done+'/'+mkt.total+' 完了');
+  set('qa-dev', dev.done+'/'+dev.total+' 完了');
   set('qa-prd', prd.done+'/'+prd.total+' 完了');
 
   // phase mini bars
@@ -973,11 +1187,16 @@ function updateAll() {
   updatePhase('pf-mkt3', '#sec-marketing .phase-block:nth-child(4)');
   updatePhase('pf-mkt4', '#sec-marketing .phase-block:nth-child(5)');
   updatePhase('pf-mkt5', '#sec-marketing .phase-block:nth-child(6)');
+  updatePhase('pf-devA', '#sec-dev .phase-block:nth-child(2)');
+  updatePhase('pf-devB', '#sec-dev .phase-block:nth-child(3)');
+  updatePhase('pf-devC', '#sec-dev .phase-block:nth-child(4)');
+  updatePhase('pf-devD', '#sec-dev .phase-block:nth-child(5)');
+  updatePhase('pf-devE', '#sec-dev .phase-block:nth-child(6)');
   updatePhase('pf-prdA', '#sec-production .phase-block:nth-child(2)');
   updatePhase('pf-prdB', '#sec-production .phase-block:nth-child(3)');
   updatePhase('pf-prdC', '#sec-production .phase-block:nth-child(4)');
 
-  updateHomeChart(mkt, prd);
+  updateHomeChart(mkt, dev, prd);
   updateKpiCount();
 }
 
@@ -1005,20 +1224,21 @@ function initHomeChart() {
   const ctx = document.getElementById('homeChart');
   if (!ctx) return;
   const mkt = countSection('#sec-marketing');
+  const dev = countSection('#sec-dev');
   const prd = countSection('#sec-production');
   if (homeChartInst) { homeChartInst.destroy(); homeChartInst = null; }
   homeChartInst = new Chart(ctx, {
     type: 'doughnut',
     data: {
-      labels: ['マーケティング完了', 'マーケティング残', '生産完了', '生産残'],
-      datasets: [{ data: [mkt.done, mkt.total-mkt.done, prd.done, prd.total-prd.done], backgroundColor: ['#40916C','#D8F3DC','#e8826a','#fff0ec'], borderWidth: 0 }]
+      labels: ['マーケティング完了', 'マーケティング残', '開発完了', '開発残', '生産完了', '生産残'],
+      datasets: [{ data: [mkt.done, mkt.total-mkt.done, dev.done, dev.total-dev.done, prd.done, prd.total-prd.done], backgroundColor: ['#40916C','#D8F3DC','#7B61FF','#EDE9FF','#e8826a','#fff0ec'], borderWidth: 0 }]
     },
     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 12 } } } }
   });
 }
-function updateHomeChart(mkt, prd) {
+function updateHomeChart(mkt, dev, prd) {
   if (!homeChartInst) return;
-  homeChartInst.data.datasets[0].data = [mkt.done, mkt.total-mkt.done, prd.done, prd.total-prd.done];
+  homeChartInst.data.datasets[0].data = [mkt.done, mkt.total-mkt.done, dev.done, dev.total-dev.done, prd.done, prd.total-prd.done];
   homeChartInst.update();
 }
 
